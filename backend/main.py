@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from groq import Groq
 from dotenv import load_dotenv
 import os 
@@ -7,22 +8,26 @@ import os
 
 # ! Wichtig: API Key niemals auf GitHub pushen
 # ? Frage: Sollen wir später mehrere Sprachen unterstützen?
-# TODO: Groq API einbinden
+# * Groq API einbinden ✅
 # TODO: Endpunkt für Community hinzufügen
 # TODO: Login/Registrierung bauen
 # * Das hier läuft bereits perfekt ✅
 
+app = FastAPI()
 
 # Setup 
 load_dotenv(dotenv_path=".env") # .env Datei laden
-
-app = FastAPI()
-
 
 client = Groq(
 api_key=os.environ.get("GROQ_API_KEY"),
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Erlaube alle Ursprünge (für Entwicklung)
+    allow_methods=["*"],  # Erlaube alle HTTP-Methoden
+    allow_headers=["*"],  # Erlaube alle Header
+)           
 
 @app.get("/")
 def startseite():
