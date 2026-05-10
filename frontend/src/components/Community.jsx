@@ -5,19 +5,27 @@ function Community({ nutzer }) {
   const [posts, setPosts] = useState([])
   const [neuerPost, setNeuerPost] = useState('')
   const [laden, setLaden] = useState(false)
+  const [meinName, setMeinName] = useState('')
 
   useEffect(() => {
     postsLaden()
+    nameLaden()
   }, [])
 
+  const nameLaden = async () => {
+    const { data } = await supabase
+      .from('profile')
+      .select('nutzername')
+      .eq('user_id', nutzer.id)
+      .single()
+    if (data) setMeinName(data.nutzername)
+  }
+
   const postsLaden = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('posts')
       .select('*')
       .order('created_at', { ascending: false })
-
-    console.log('Data:', data)
-    console.log('Error:', error)
     setPosts(data || [])
   }
 
@@ -25,13 +33,10 @@ function Community({ nutzer }) {
     if (!neuerPost.trim()) return
     setLaden(true)
 
-    const { data, error } = await supabase.from('posts').insert({
+    await supabase.from('posts').insert({
       inhalt: neuerPost,
-      author_email: nutzer.email
+      author_email: meinName || 'Anonym'
     })
-
-    console.log('Insert Data:', data)
-    console.log('Insert Error:', error)
 
     setNeuerPost('')
     await postsLaden()
@@ -66,7 +71,7 @@ function Community({ nutzer }) {
         )}
         {posts.map((post) => (
           <div key={post.id} className="post-karte">
-            <p className="post-autor">{post.author_email}</p>
+            <p className="post-autor">✨ {post.author_email}</p>
             <p className="post-inhalt">{post.inhalt}</p>
             <p className="post-datum">
               {new Date(post.created_at).toLocaleDateString('de-DE', {

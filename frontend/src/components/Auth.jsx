@@ -4,6 +4,7 @@ import { supabase } from '../supabase'
 function Auth() {
   const [email, setEmail] = useState('')
   const [passwort, setPasswort] = useState('')
+  const [nutzername, setNutzername] = useState('')
   const [isLogin, setIsLogin] = useState(true)
   const [laden, setLaden] = useState(false)
   const [nachricht, setNachricht] = useState('')
@@ -19,14 +20,26 @@ function Auth() {
       })
       if (error) setNachricht(error.message)
     } else {
-      const { error } = await supabase.auth.signUp({
+      if (!nutzername.trim()) {
+        setNachricht('Bitte wähle einen Benutzernamen.')
+        setLaden(false)
+        return
+      }
+
+      const { data, error } = await supabase.auth.signUp({
         email,
         password: passwort
       })
+
       if (error) {
         setNachricht(error.message)
       } else {
-        setNachricht('Bestätigungs-E-Mail wurde gesendet! Bitte prüfe dein Postfach. 🤍')
+        await supabase.from('profile').insert({
+          user_id: data.user.id,
+          nutzername: nutzername.trim()
+        })
+        setNachricht('Willkommen! Du kannst dich jetzt einloggen. 🤍')
+        setIsLogin(true)
       }
     }
     setLaden(false)
@@ -40,6 +53,16 @@ function Auth() {
       <p className="auth-subtitle">
         {isLogin ? 'Schön dass du wieder da bist. 🤍' : 'Dein Platz wartet auf dich.'}
       </p>
+
+      {!isLogin && (
+        <input
+          className="auth-input"
+          type="text"
+          placeholder="Benutzername (wird öffentlich angezeigt)"
+          value={nutzername}
+          onChange={(e) => setNutzername(e.target.value)}
+        />
+      )}
 
       <input
         className="auth-input"

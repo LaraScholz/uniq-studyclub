@@ -7,7 +7,7 @@ import { supabase } from './supabase'
 
 function App() {
   const [nutzer, setNutzer] = useState(null)
-  const [aktiveSeite, setAktiveSeite] = useState('lernen')
+  const [seite, setSeite] = useState('start')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -15,36 +15,48 @@ function App() {
     })
     supabase.auth.onAuthStateChange((_event, session) => {
       setNutzer(session?.user ?? null)
+      if (session?.user) setSeite('lernen')
     })
   }, [])
 
   const ausloggen = async () => {
     await supabase.auth.signOut()
+    setSeite('start')
   }
 
+  // NAVBAR
+  const Navbar = () => (
+    <nav className="navbar">
+      <h1 className="logo" onClick={() => setSeite('start')} style={{ cursor: 'pointer' }}>
+        Uniq Study Club
+      </h1>
+      <ul className="nav-links">
+        {nutzer ? (
+          <>
+            <li><a href="#" onClick={() => setSeite('lernen')}
+              style={{ color: seite === 'lernen' ? '#C4A55A' : '' }}>Lernen</a></li>
+            <li><a href="#" onClick={() => setSeite('community')}
+              style={{ color: seite === 'community' ? '#C4A55A' : '' }}>Community</a></li>
+            <li><a href="#" onClick={ausloggen}>Ausloggen</a></li>
+          </>
+        ) : (
+          <>
+            <li><a href="#" onClick={() => setSeite('start')}>Start</a></li>
+            <li><a href="#" onClick={() => setSeite('ueber')}>Der Club</a></li>
+            <li><a href="#" onClick={() => setSeite('login')}>Einloggen</a></li>
+          </>
+        )}
+      </ul>
+    </nav>
+  )
+
+  // EINGELOGGT
   if (nutzer) {
     return (
       <div className="app">
-        <nav className="navbar">
-          <h1 className="logo">Uniq Study Club</h1>
-          <ul className="nav-links">
-            <li>
-              <a href="#" onClick={() => setAktiveSeite('lernen')}
-                style={{ color: aktiveSeite === 'lernen' ? '#C4A55A' : '' }}>
-                Lernen
-              </a>
-            </li>
-            <li>
-              <a href="#" onClick={() => setAktiveSeite('community')}
-                style={{ color: aktiveSeite === 'community' ? '#C4A55A' : '' }}>
-                Community
-              </a>
-            </li>
-            <li><a href="#" onClick={ausloggen}>Ausloggen</a></li>
-          </ul>
-        </nav>
-        {aktiveSeite === 'lernen' && <Chat />}
-        {aktiveSeite === 'community' && <Community nutzer={nutzer} />}
+        <Navbar />
+        {seite === 'lernen' && <Chat />}
+        {seite === 'community' && <Community nutzer={nutzer} />}
         <footer className="footer">
           © 2026 Uniq Study Club · Where studying feels like a luxury.
         </footer>
@@ -52,21 +64,54 @@ function App() {
     )
   }
 
+  // LOGIN SEITE
+  if (seite === 'login') {
+    return (
+      <div className="app">
+        <Navbar />
+        <Auth />
+        <footer className="footer">
+          © 2026 Uniq Study Club · Where studying feels like a luxury.
+        </footer>
+      </div>
+    )
+  }
+
+  // ÜBER DEN CLUB SEITE
+  if (seite === 'ueber') {
+    return (
+      <div className="app">
+        <Navbar />
+        <section className="ueber-sektion">
+          <h2>Über den Club</h2>
+          <p>
+            Der <strong>Uniq Study Club</strong> ist ein digitaler Club für Studenten,
+            die sich im Studium manchmal überfordert fühlen.
+          </p>
+          <p>
+            Hier findest du Unterstützung, Motivation und eine Community
+            die wirklich versteht wie sich das Studium anfühlt.
+          </p>
+          <p>Kein Druck. Kein Leistungszwang. Einfach ein ruhiger Ort für dich.</p>
+          <blockquote className="zitat">
+            „Man darf sich überfordert fühlen. Du bist damit nicht allein."
+          </blockquote>
+          <button className="cta-button" onClick={() => setSeite('login')}>
+            Jetzt dabei sein 🤍
+          </button>
+        </section>
+        <footer className="footer">
+          © 2026 Uniq Study Club · Where studying feels like a luxury.
+        </footer>
+      </div>
+    )
+  }
+
+  // STARTSEITE
   return (
     <div className="app">
+      <Navbar />
 
-      {/* NAVBAR */}
-      <nav className="navbar">
-        <h1 className="logo">Uniq Study Club</h1>
-        <ul className="nav-links">
-          <li><a href="#willkommen">Start</a></li>
-          <li><a href="#club">Der Club</a></li>
-          <li><a href="#raum">Der Raum</a></li>
-          <li><a href="#login">Einloggen</a></li>
-        </ul>
-      </nav>
-
-      {/* HERO – WILLKOMMEN */}
       <section className="hero-willkommen" id="willkommen">
         <h2>Herzlich Willkommen.</h2>
         <p className="hero-sub">Ich freue mich wirklich sehr, dass du hier bist.</p>
@@ -76,19 +121,10 @@ function App() {
         <p className="hero-gold">Schön, dass du da bist.</p>
       </section>
 
-      {/* DER CLUB */}
       <section className="club-sektion" id="club">
         <div className="club-bilder">
-          <img
-            src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=400&h=300&fit=crop"
-            alt="Studieren"
-            className="club-bild"
-          />
-          <img
-            src="https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400&h=300&fit=crop"
-            alt="Schreibtisch"
-            className="club-bild"
-          />
+          <img src="/Images/Ipad.jpg" alt="Studieren" className="club-bild" />
+          <img src="/Images/Office.jpg" alt="Schreibtisch" className="club-bild" />
         </div>
         <div className="club-text">
           <h3>Der Club</h3>
@@ -97,64 +133,49 @@ function App() {
             die sich im Studium manchmal überfordert fühlen und sich mehr Klarheit,
             Motivation und Unterstützung wünschen.
           </p>
-          <p>
-            Kein Druck. Kein Leistungszwang. Einfach Unterstützung, die wirklich hilft.
-          </p>
+          <p>Kein Druck. Kein Leistungszwang. Einfach Unterstützung, die wirklich hilft.</p>
           <blockquote className="zitat">
             „Man darf sich überfordert fühlen. Du bist damit nicht allein.
             Es geht vielen so, auch wenn man es nicht sieht."
           </blockquote>
           <p className="gold-text">Hier bist du herzlichst willkommen, so wie du bist. 🤍</p>
+          <button className="cta-button" onClick={() => setSeite('ueber')}>
+            Mehr über den Club
+          </button>
         </div>
       </section>
 
-      {/* TRENNER */}
       <div className="trenner">
         <p>Du bist nicht allein. Und du musst auch nicht alles alleine lösen.</p>
       </div>
 
-      {/* DER RAUM */}
       <section className="raum-sektion" id="raum">
         <div className="raum-text">
           <h3>Ein ruhiger Ort für dich</h3>
           <p>Manchmal braucht man keinen neuen Plan, sondern einen ruhigen Moment.</p>
           <p>Einen Platz, an dem niemand etwas erwartet. Ganz in deinem Tempo.</p>
           <blockquote className="zitat">„Wachstum beginnt dort, wo es still wird."</blockquote>
-          <button className="cta-button" onClick={() => document.getElementById('login').scrollIntoView()}>
+          <button className="cta-button" onClick={() => setSeite('login')}>
             Raum betreten
           </button>
+          <img src="/Images/Cozy.jpg" alt="Ruhiger Moment" className="raum-bild-unten" />
         </div>
         <div className="raum-bilder">
-          <img
-            src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop"
-            alt="Ruhiger Ort"
-            className="raum-bild"
-          />
+          <img src="/Images/Seaside.jpg" alt="Ruhiger Ort" className="raum-bild" />
         </div>
       </section>
 
-      {/* E-MAIL ABO */}
       <section className="email-sektion">
         <div className="email-content">
-          <h3>Updates per Mail <span>🤍</span></h3>
+          <h3>Updates per Mail 🤍</h3>
           <p>Wenn du Lust hast, kannst du hier deine E-Mail-Adresse dalassen.</p>
           <p>Ich schicke dir nur gelegentlich Updates – ohne Spam, ohne Druck.</p>
-          <p>Wenn du dich nicht einträgst, ist das natürlich völlig okay. 🤍</p>
           <div className="email-form">
-            <input
-              className="auth-input"
-              type="email"
-              placeholder="Deine E-Mail Adresse"
-            />
+            <input className="auth-input" type="email" placeholder="Deine E-Mail Adresse" />
             <button className="cta-button">Dabei sein ✨</button>
           </div>
           <p className="gold-text">Ich freue mich auf dich. :)</p>
         </div>
-      </section>
-
-      {/* LOGIN */}
-      <section id="login">
-        <Auth />
       </section>
 
       <footer className="footer">
