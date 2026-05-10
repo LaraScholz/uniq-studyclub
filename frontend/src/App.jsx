@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Chat from './components/Chat'
 import Auth from './components/Auth'
+import Community from './components/Community'
 import { supabase } from './supabase'
 
 function App() {
   const [nutzer, setNutzer] = useState(null)
+  const [aktiveSeite, setAktiveSeite] = useState('lernen')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setNutzer(session?.user ?? null)
     })
-
     supabase.auth.onAuthStateChange((_event, session) => {
       setNutzer(session?.user ?? null)
     })
@@ -28,14 +29,28 @@ function App() {
         <ul className="nav-links">
           {nutzer ? (
             <>
-              <li><span className="nav-email">{nutzer.email}</span></li>
+              <li>
+                <a
+                  href="#"
+                  onClick={() => setAktiveSeite('lernen')}
+                  style={{ color: aktiveSeite === 'lernen' ? '#C4A55A' : '' }}
+                >
+                  Lernen
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  onClick={() => setAktiveSeite('community')}
+                  style={{ color: aktiveSeite === 'community' ? '#C4A55A' : '' }}
+                >
+                  Community
+                </a>
+              </li>
               <li><a href="#" onClick={ausloggen}>Ausloggen</a></li>
             </>
           ) : (
-            <>
-              <li><a href="#">Lernen</a></li>
-              <li><a href="#">Community</a></li>
-            </>
+            <li><a href="#">Uniq Study Club</a></li>
           )}
         </ul>
       </nav>
@@ -48,7 +63,9 @@ function App() {
         <p className="hero-gold">Schön, dass du da bist.</p>
       </section>
 
-      {nutzer ? <Chat /> : <Auth />}
+      {!nutzer && <Auth />}
+      {nutzer && aktiveSeite === 'lernen' && <Chat />}
+      {nutzer && aktiveSeite === 'community' && <Community nutzer={nutzer} />}
 
       <footer className="footer">
         © 2026 Uniq Study Club · Where studying feels like a luxury.

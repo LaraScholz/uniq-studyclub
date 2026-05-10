@@ -238,3 +238,75 @@ body {
   font-size: 0.85rem;
 }
 
+.community-container {
+  max-width: 750px;
+  margin: 3rem auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.community-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.community-subtitle {
+  color: #999;
+  font-size: 0.9rem;
+  font-weight: 300;
+  margin-top: -1rem;
+}
+
+.post-erstellen {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #fdfaf5;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid #f0ebe0;
+}
+
+.posts-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.post-karte {
+  background: #fdfaf5;
+  border: 1px solid #f0ebe0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.post-autor {
+  color: #C4A55A;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.post-inhalt {
+  color: #333;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.post-datum {
+  color: #bbb;
+  font-size: 0.75rem;
+}
+
+.keine-posts {
+  text-align: center;
+  color: #bbb;
+  font-size: 0.9rem;
+  padding: 2rem;
+}
