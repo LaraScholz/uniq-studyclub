@@ -24,7 +24,6 @@ function App() {
     setSeite('start')
   }
 
-  // NAVBAR
   const Navbar = () => (
     <nav className="navbar">
       <h1 className="logo" onClick={() => setSeite('start')} style={{ cursor: 'pointer' }}>
@@ -50,7 +49,6 @@ function App() {
     </nav>
   )
 
-  // EINGELOGGT
   if (nutzer) {
     return (
       <div className="app">
@@ -64,12 +62,13 @@ function App() {
     )
   }
 
-  // LOGIN SEITE
   if (seite === 'login') {
     return (
       <div className="app">
         <Navbar />
-        <Auth />
+        <div data-aos="fade-up">
+          <Auth />
+        </div>
         <footer className="footer">
           © 2026 Uniq Study Club · Where studying feels like a luxury.
         </footer>
@@ -77,12 +76,11 @@ function App() {
     )
   }
 
-  // ÜBER DEN CLUB SEITE
   if (seite === 'ueber') {
     return (
       <div className="app">
         <Navbar />
-        <section className="ueber-sektion">
+        <section className="ueber-sektion" data-aos="fade-up">
           <h2>Über den Club</h2>
           <p>
             Der <strong>Uniq Study Club</strong> ist ein digitaler Club für Studenten,
@@ -107,12 +105,11 @@ function App() {
     )
   }
 
-  // STARTSEITE
   return (
     <div className="app">
       <Navbar />
 
-      <section className="hero-willkommen" id="willkommen">
+      <section className="hero-willkommen" id="willkommen" data-aos="fade-up">
         <h2>Herzlich Willkommen.</h2>
         <p className="hero-sub">Ich freue mich wirklich sehr, dass du hier bist.</p>
         <p className="hero-sub">
@@ -122,11 +119,11 @@ function App() {
       </section>
 
       <section className="club-sektion" id="club">
-        <div className="club-bilder">
+        <div className="club-bilder" data-aos="fade-right" data-aos-delay="100">
           <img src="/Images/Ipad.jpg" alt="Studieren" className="club-bild" />
           <img src="/Images/Office.jpg" alt="Schreibtisch" className="club-bild" />
         </div>
-        <div className="club-text">
+        <div className="club-text" data-aos="fade-left" data-aos-delay="200">
           <h3>Der Club</h3>
           <p>
             Der <strong>Uniq Study Club</strong> ist ein digitaler Club für Studenten,
@@ -145,12 +142,12 @@ function App() {
         </div>
       </section>
 
-      <div className="trenner">
+      <div className="trenner" data-aos="fade-up">
         <p>Du bist nicht allein. Und du musst auch nicht alles alleine lösen.</p>
       </div>
 
       <section className="raum-sektion" id="raum">
-        <div className="raum-text">
+        <div className="raum-text" data-aos="fade-right" data-aos-delay="100">
           <h3>Ein ruhiger Ort für dich</h3>
           <p>Manchmal braucht man keinen neuen Plan, sondern einen ruhigen Moment.</p>
           <p>Einen Platz, an dem niemand etwas erwartet. Ganz in deinem Tempo.</p>
@@ -160,12 +157,12 @@ function App() {
           </button>
           <img src="/Images/Cozy.jpg" alt="Ruhiger Moment" className="raum-bild-unten" />
         </div>
-        <div className="raum-bilder">
+        <div className="raum-bilder" data-aos="fade-left" data-aos-delay="200">
           <img src="/Images/Seaside.jpg" alt="Ruhiger Ort" className="raum-bild" />
         </div>
       </section>
 
-      <section className="email-sektion">
+      <section className="email-sektion" data-aos="fade-up">
         <div className="email-content">
           <h3>Updates per Mail 🤍</h3>
           <p>Wenn du Lust hast, kannst du hier deine E-Mail-Adresse dalassen.</p>
@@ -178,7 +175,7 @@ function App() {
         </div>
       </section>
 
-      <footer className="footer">
+      <footer className="footer" data-aos="fade-up">
         © 2026 Uniq Study Club · Where studying feels like a luxury.
       </footer>
     </div>
